@@ -101,3 +101,4 @@ Some compression ratios for other test data:
 
 - E.coli from https://corpus.canterbury.ac.nz/descriptions/: 4MB to 540kB
 - CompressStringLib.h: 44kB to 35kB
+- Executable binary file for benchmarks: 83kB to 80kB (this project is not intended to compress binary data with random content)
