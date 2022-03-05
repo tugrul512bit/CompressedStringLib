@@ -1,5 +1,5 @@
 # CompressedStringLib
-Heavy-weight std::string wrapper with compression for big files.
+Heavy-weight std::string wrapper that compresses its content and decompresses when used, accelerated with caching.
 
 ## PredictorString
 
