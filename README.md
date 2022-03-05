@@ -1,2 +1,2 @@
 # CompressedStringLib
-Heavy-weight std::string with compression for big files.
+Heavy-weight std::string wrapper with compression for big files.
