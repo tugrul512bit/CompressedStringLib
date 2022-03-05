@@ -1083,6 +1083,10 @@ public:
     					[&](size_t index, unsigned char val){   } /* string is immutable, so no cache-write */
     					);
     		}
+    		else
+    		{
+    			*cacheSize=0;
+    		}
 
     		if(str.size()>0)
     		{
@@ -1149,7 +1153,10 @@ public:
     	// get char
     	const unsigned char operator[](size_t index)
     	{
-    		return cacheL1->get(index);
+    		if(*cacheSize>0)
+    			return cacheL1->get(index);
+    		else
+    			return fields->tree.consume(fields->bits,fields->bitLength,index,1)[0];
     	}
 
     	// find position of character
