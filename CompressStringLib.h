@@ -157,12 +157,15 @@ namespace CompressedStringLib
 
 
     		int ctr=0;
-
+    		int singleCharDetected = 0;
+    		int detectedNodeIndex = -1;
     		for(int i=0;i<256;i++)
     		{
     			size_t ct = referenceMapDirect[i];
     			if(ct>0)
     			{
+    				detectedNodeIndex=i;
+    				singleCharDetected++;
     				Node node;
 
     				node.data=i;
@@ -176,6 +179,21 @@ namespace CompressedStringLib
     				sortedNodes.push_back(node);
     				ctr++;
     			}
+    		}
+    		if(singleCharDetected == 1)
+    		{
+				Node node;
+				referenceMapDirect[(detectedNodeIndex+1)&255]++;
+				node.data=(detectedNodeIndex+1)&255;
+				node.count=referenceMapDirect[(detectedNodeIndex+1)&255];
+
+				node.self=ctr;
+				node.leaf1=-1;
+				node.leaf2=-1;
+				node.isLeaf=true;
+				referenceVec.push_back(node);
+				sortedNodes.push_back(node);
+				ctr++;
     		}
 
     		std::sort(sortedNodes.begin(), sortedNodes.end(),[](const Node & n1, const Node & n2){ return n1.count<n2.count;});
