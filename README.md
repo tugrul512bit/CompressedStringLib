@@ -3,7 +3,7 @@ Heavy-weight std::string wrapper with compression for big files.
 
 ## PredictorString
 
-Uses single-char transition dictionary prediction to compress data.
+Uses single-char transition dictionary prediction to compress data. Fast decompression.
 
 ```C++
 std::string s1;
@@ -14,15 +14,15 @@ CompressedStringLib::PredictorString<ttype> pstr(s1); // 246kB
 std::string output = pstr.string(); // 326 kB again
 ```
 
-Encoding in FX8150 3.6GHz CPU + single channel 1333MHz RAM: 110 MB/s single core
-
-Decoding in FX8150 3.6GHz CPU + single channel 1333MHz RAM: 130 MB/s single core
+Encoding: 110 MB/s single core
+Decoding: 130 MB/s single core
+(FX8150 3.6GHz CPU + single channel 1333MHz RAM + Ubuntu 18.04LTS + turbo disabled)
 
 ----
 
 ## HuffmanString
 
-Uses Huffman-Encoding to compress data.
+Uses Huffman-Encoding to compress data. Fast indexing into compressed data.
 
 ```C++
 std::string stri;
@@ -41,3 +41,7 @@ test2.deserializeFrom(ser);
 std::cout<<test2.string().size()<<std::endl; // 326 kB again
 std::cout<<ser.size()<<std::endl; // 212 kB
 ```
+
+Encoding: 53 MB/s single core
+Decoding: 53 MB/s single core
+(FX8150 3.6GHz CPU + single channel 1333MHz RAM  + Ubuntu 18.04LTS + turbo disabled)
