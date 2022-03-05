@@ -106,3 +106,4 @@ Some compression ratios for other test data:
 - Executable binary file for benchmarks: 83kB to 80kB (this project is not intended to compress binary data with random content)
 - Png file: 180kB to 195kB (png is already in a compressed format)
 - Minified JavaScript file (Jquery 1.4.2): 72kB to 60kB
+- JavaScript file (Jquery 1.4.2): 163kB to 114kB
