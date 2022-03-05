@@ -14,7 +14,11 @@ CompressedStringLib::PredictorString<size_t> pstr(s1); // 246kB
 std::string output = pstr.string(); // 326 kB again
 
 // 126kB of aaaaaa (and 2x decoding speed because of predictable data)
-CompressedStringLib::PredictorString<size_t> pstr(std::string(1024*1024,'a'));  
+CompressedStringLib::PredictorString<size_t> pstr2(std::string(1024*1024,'a'));  
+
+// ~5 nanoseconds sampling latency with caching
+// 14 miliseconds without caching (or with cache-miss), not optimized yet
+unsigned char c = pstr2[1024*1024*2]; 
 
 ```
 
@@ -48,9 +52,6 @@ test2.deserializeFrom(ser);
 std::cout<<test2.string().size()<<std::endl; // 326 kB again
 std::cout<<ser.size()<<std::endl; // 212 kB
 
-// ~5 nanoseconds sampling latency with caching
-// 14 miliseconds without caching (or with cache-miss), not optimized yet
-unsigned char c = test2[1024*1024*2]; 
 
 // 640 kB and 4x decoding speed due to having too many "a" compared to just 1 "b"
 // 256 chars cached
