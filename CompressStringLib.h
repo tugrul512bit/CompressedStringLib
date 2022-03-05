@@ -1201,6 +1201,8 @@ private:
     class PredictorFields
     {
     public:
+
+
     	const std::string decompress(size_t offset=0,size_t length=0,bool cachedRead=false)
     	{
     		std::string result;
@@ -1502,9 +1504,31 @@ private:
     class PredictorString
     {
     public:
-    	PredictorString(const std::string & str=std::string("")):fields(std::make_shared<PredictorFields<PrefixType>>())
+    	PredictorString(const std::string & str=std::string(""),
+    					const size_t cacheSize=256):fields(std::make_shared<PredictorFields<PrefixType>>())
     	{
     		fields->compress(str);
+       		if(cacheSize>0)
+        		{
+        			size_t pickSize = 1;
+        			while(pickSize < cacheSize)
+        			{
+        				pickSize *= 2;
+        			}
+
+        			cacheL1 = std::make_shared<DirectMappedMultiThreadCache<size_t,unsigned char>>(
+        					pickSize,
+        					[&,this](size_t index)
+        					{
+        						return this->string()[index];
+        					},
+        					[&](size_t index, unsigned char val){   } /* string is immutable, so no cache-write */
+        			);
+        		}
+        		else
+        		{
+        			cacheL1=nullptr;
+        		}
     	}
 
     	// gets compressed character stream without prefixes
@@ -1549,10 +1573,13 @@ private:
     		return result;
     	}
 
-    	// todo: implement cached load & multithreading
+    	// todo: implement multithreading
     	const unsigned char operator[](size_t index)
     	{
-    		return this->fields->decompress(index,1,true)[index];
+    		if(cacheL1)
+    			return cacheL1->get(index);
+    		else
+    			return this->fields->decompress(index,1,true)[index];
     	}
 
     	// todo: implement multithreaded find
@@ -1570,6 +1597,7 @@ private:
 
     private:
     	std::shared_ptr<PredictorFields<PrefixType>> fields;
+    	std::shared_ptr<DirectMappedMultiThreadCache<size_t,unsigned char>> cacheL1;
     };
 }
 
