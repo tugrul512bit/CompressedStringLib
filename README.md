@@ -13,6 +13,9 @@ CompressedStringLib::PredictorString<size_t> pstr(s1); // 246kB
 
 std::string output = pstr.string(); // 326 kB again
 
+// 126kB of aaaaaa (and 2x decoding speed because of predictable data)
+CompressedStringLib::PredictorString<size_t> pstr(std::string(1024*1024,'a'));  
+
 ```
 
 Encoding: 110 MB/s single core
@@ -43,6 +46,9 @@ test2.deserializeFrom(ser);
 
 std::cout<<test2.string().size()<<std::endl; // 326 kB again
 std::cout<<ser.size()<<std::endl; // 212 kB
+
+// 160 kB and 4x decoding speed due to having too many "a" compared to just 1 "b"
+CompressedStringLib::HuffmanString test3(std::string(1024*1024,'a') + std::string("b"));
 ```
 
 Encoding: 53 MB/s single core
