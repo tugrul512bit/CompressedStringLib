@@ -55,9 +55,12 @@ unsigned char c = test2[1024*1024*2];
 // 256 chars cached
 CompressedStringLib::HuffmanString test3(std::string(1024*1024*4,'a') + std::string("b"),false,256);
 
+ // bigFile: 4MB of "a"
+CompressedStringLib::HuffmanString test5(bigFile,false,256); // 540kB
+
 // ~5 nanoseconds sampling latency with caching
 // 35 microseconds without caching (or with cache-miss), optimized for indexing
-unsigned char c = test3[1024*1024*2]; 
+unsigned char c = test5[1024*1024*2]; 
 ```
 
 Encoding: 53 MB/s single core
