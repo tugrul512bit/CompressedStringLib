@@ -9,9 +9,10 @@ Uses single-char transition dictionary prediction to compress data. Fast decompr
 std::string s1;
 std::getline(std::ifstream("opencl.hpp"), s1, '\0'); // 326kB (a big header file from an api)
 
-CompressedStringLib::PredictorString<ttype> pstr(s1); // 246kB
+CompressedStringLib::PredictorString<size_t> pstr(s1); // 246kB
 
 std::string output = pstr.string(); // 326 kB again
+
 ```
 
 Encoding: 110 MB/s single core
