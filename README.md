@@ -107,3 +107,5 @@ Some compression ratios for other test data:
 - Png file: 180kB to 195kB (png is already in a compressed format)
 - Minified JavaScript file (Jquery 1.4.2): 72kB to 60kB
 - JavaScript file (Jquery 1.4.2): 163kB to 114kB
+- English dictionary from http://www.math.sjsu.edu/~foster/dictionary.txt: 3.2MB to 1.8MB
+- Dictionary from https://raw.githubusercontent.com/dwyl/english-words/master/words_alpha.txt: 3.8MB to 2.1MB
