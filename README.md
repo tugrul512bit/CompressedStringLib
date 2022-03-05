@@ -47,12 +47,16 @@ test2.deserializeFrom(ser);
 std::cout<<test2.string().size()<<std::endl; // 326 kB again
 std::cout<<ser.size()<<std::endl; // 212 kB
 
+// ~5 nanoseconds sampling latency with caching
+// 14 miliseconds without caching (or with cache-miss), not optimized yet
+unsigned char c = test2[1024*1024*2]; 
+
 // 640 kB and 4x decoding speed due to having too many "a" compared to just 1 "b"
 // 256 chars cached
 CompressedStringLib::HuffmanString test3(std::string(1024*1024*4,'a') + std::string("b"),false,256);
 
 // ~5 nanoseconds sampling latency with caching
-// 35 microseconds without caching (or with cache-miss)
+// 35 microseconds without caching (or with cache-miss), optimized for indexing
 unsigned char c = test3[1024*1024*2]; 
 ```
 
