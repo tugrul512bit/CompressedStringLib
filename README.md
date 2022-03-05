@@ -15,7 +15,9 @@ std::string output = pstr.string(); // 326 kB again
 ```
 
 Encoding: 110 MB/s single core
+
 Decoding: 130 MB/s single core
+
 (FX8150 3.6GHz CPU + single channel 1333MHz RAM + Ubuntu 18.04LTS + turbo disabled)
 
 ----
@@ -43,5 +45,7 @@ std::cout<<ser.size()<<std::endl; // 212 kB
 ```
 
 Encoding: 53 MB/s single core
-Decoding: 53 MB/s single core
+
+Decoding: 30 MB/s single core
+
 (FX8150 3.6GHz CPU + single channel 1333MHz RAM  + Ubuntu 18.04LTS + turbo disabled)
