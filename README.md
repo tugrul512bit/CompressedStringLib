@@ -77,7 +77,7 @@ Decoding: 30 MB/s single core
 
 ## PredictorString Optimized With Huffman Encoding
 
-By default, PredictorString does not enable Huffman Encoding for speed. With ```CompressedStringLib::PredictorString<UnsignedIntegerPrefixType>::OPTIMIZE_WITH_HUFFMAN_ENCODING``` parameter given to its constructor, 
+By default, PredictorString does not enable Huffman Encoding for speed. With ```CompressedStringLib::PredictorString<UnsignedIntegerPrefixType>::OPTIMIZE_WITH_HUFFMAN_ENCODING``` parameter given to its constructor, it further compresses the internal char-literal data to save some more space (despite allocating some memory for Huffman Tree & its lookup tables).
 
 ```C++
 std::string str;
