@@ -51,7 +51,8 @@ std::cout<<ser.size()<<std::endl; // 212 kB
 // 256 chars cached
 CompressedStringLib::HuffmanString test3(std::string(1024*1024*4,'a') + std::string("b"),false,256);
 
-// 38 microseconds sampling latency (works only with cache size > 0)
+// 3.4 microseconds sampling latency with caching
+// 35 microseconds without caching
 unsigned char c = test3[1024*1024*2]; 
 ```
 
