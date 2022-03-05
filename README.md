@@ -47,8 +47,11 @@ test2.deserializeFrom(ser);
 std::cout<<test2.string().size()<<std::endl; // 326 kB again
 std::cout<<ser.size()<<std::endl; // 212 kB
 
-// 160 kB and 4x decoding speed due to having too many "a" compared to just 1 "b"
-CompressedStringLib::HuffmanString test3(std::string(1024*1024,'a') + std::string("b"));
+// 640 kB and 4x decoding speed due to having too many "a" compared to just 1 "b"
+CompressedStringLib::HuffmanString test3(std::string(1024*1024*4,'a') + std::string("b"));
+
+// 130 microseconds sampling latency
+unsigned char c = test3[1024*1024*2]; 
 ```
 
 Encoding: 53 MB/s single core
