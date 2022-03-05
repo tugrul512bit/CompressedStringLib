@@ -1215,6 +1215,14 @@ private:
     		const size_t sz = prefix.size();
     		constexpr int szTileIn = 64;
 
+    		if(hstr)
+    		{
+    			compressed.resize(szStr);
+    			const std::string& hs = hstr->string();
+    			std::copy(hs.begin(),hs.end(),compressed.begin());
+
+    		}
+
     		alignas(64)
     		unsigned char in[szTileIn];
 
@@ -1323,13 +1331,26 @@ private:
     			result.append(in,in+szTileIn);
     		}
 
+    		if(hstr)
+    		{
+    			compressed = std::vector<unsigned char>();
+    		}
 
     		return result.substr(0,szStr);
     	}
 
     	const std::string bits()
     	{
-    		return std::string((const char * )compressed.data(),compressed.size());
+    		if(hstr)
+    		{
+    			std::vector<unsigned char> ser = hstr->serialize();
+
+    			return std::string(ser.begin(),ser.end());
+    		}
+    		else
+    		{
+    			return std::string((const char * )compressed.data(),compressed.size());
+    		}
     	}
 
 
@@ -1492,21 +1513,54 @@ private:
     		prefix.shrink_to_fit();
     		compressed.shrink_to_fit();
 
-    	}
+    		// if optimized with Huffman Encoding
+    		if(hstr)
+    		{
+    			*hstr = HuffmanString(std::string(compressed.begin(),compressed.end()));
 
+    			// release unused internal data
+    			compressed = std::vector<unsigned char>();
+    		}
+    	}
+    	std::shared_ptr<HuffmanString> hstr;
 private:
     	std::vector<PrefixType> prefix;
     	std::vector<unsigned char> compressed;
     	size_t szStr;
+
     };
 
     template<typename PrefixType=size_t>
     class PredictorString
     {
     public:
+
+    	enum {
+    		// only dictionary-based "prediction" of char-to-char transitions to compress data
+    		OPTIMIZE_NONE,
+
+    		// compressed string's character-literal buffer is further compressed by Huffman Encoding
+    		OPTIMIZE_WITH_HUFFMAN_ENCODING
+    	};
+
+    	/*
+    	 * str: string to be saved as compressed in internal data
+    	 * cacheSize: size of direct-mapped cache for accelerating indexed [] access of characers
+    	 * optimization_level
+    	 */
     	PredictorString(const std::string & str=std::string(""),
-    					const size_t cacheSize=256):fields(std::make_shared<PredictorFields<PrefixType>>())
+    					const size_t cacheSize=256,
+    					const int optimization_level=OPTIMIZE_NONE):fields(std::make_shared<PredictorFields<PrefixType>>())
     	{
+    		if(optimization_level==OPTIMIZE_NONE)
+    		{
+    			fields->hstr = nullptr;
+    		}
+    		else if(optimization_level==OPTIMIZE_WITH_HUFFMAN_ENCODING)
+    		{
+    			fields->hstr = std::make_shared<HuffmanString>();
+    		}
+
     		fields->compress(str);
        		if(cacheSize>0)
         		{
