@@ -96,3 +96,8 @@ CompressedStringLib::PredictorString<UnsignedIntegerPrefixType> pstr(
 
  auto extracted = pstr.string(); // 326 kB
 ```
+
+Some compression ratios for other test data:
+
+- E.coli from https://corpus.canterbury.ac.nz/descriptions/: 4MB to 540kB
+- CompressStringLib.h: 44kB to 35kB
