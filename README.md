@@ -23,6 +23,7 @@ Encoding: 110 MB/s single core
 Decoding: 130 MB/s single core
 
 (FX8150 3.6GHz CPU + single channel 1333MHz RAM + Ubuntu 18.04LTS + turbo disabled)
+(Tested on compiler g++ with flags  -march=native -mavx -m64 -O3 -std=c++1y)
 
 ----
 
@@ -68,3 +69,4 @@ Encoding: 53 MB/s single core
 Decoding: 30 MB/s single core
 
 (FX8150 3.6GHz CPU + single channel 1333MHz RAM  + Ubuntu 18.04LTS + turbo disabled)
+(Tested on compiler g++ with flags  -march=native -mavx -m64 -O3 -std=c++1y)
