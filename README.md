@@ -71,3 +71,22 @@ Decoding: 30 MB/s single core
 
 (FX8150 3.6GHz CPU + single channel 1333MHz RAM  + Ubuntu 18.04LTS + turbo disabled)
 (Tested on compiler g++ with flags  -march=native -mavx -m64 -O3 -std=c++1y)
+
+---
+
+## PredictorString Optimized With Huffman Encoding
+
+By default, PredictorString does not enable Huffman Encoding for speed. With CompressedStringLib::PredictorString<UnsignedIntegerPrefixType>::OPTIMIZE_WITH_HUFFMAN_ENCODING parameter given to its constructor, 
+
+```C++
+std::string str;
+std::getline(std::ifstream("opencl.hpp"), stri, '\0'); // 326kB
+
+
+// internal data (only compressed char-literals, not prefixes) is compressed further by Huffman Encoding
+// 196 kB
+// 32 MB/s decoding bandwidth (just a bit higher than Huffman Encoding alone due to already compressed data size)
+CompressedStringLib::PredictorString<size_t> pstr(str,2048,CompressedStringLib::PredictorString<size_t>::OPTIMIZE_WITH_HUFFMAN_ENCODING);
+
+ auto extracted = pstr.string(); // 326 kB
+```
