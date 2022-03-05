@@ -48,9 +48,10 @@ std::cout<<test2.string().size()<<std::endl; // 326 kB again
 std::cout<<ser.size()<<std::endl; // 212 kB
 
 // 640 kB and 4x decoding speed due to having too many "a" compared to just 1 "b"
-CompressedStringLib::HuffmanString test3(std::string(1024*1024*4,'a') + std::string("b"));
+// 256 chars cached
+CompressedStringLib::HuffmanString test3(std::string(1024*1024*4,'a') + std::string("b"),false,256);
 
-// 130 microseconds sampling latency
+// 38 microseconds sampling latency (works only with cache size > 0)
 unsigned char c = test3[1024*1024*2]; 
 ```
 
