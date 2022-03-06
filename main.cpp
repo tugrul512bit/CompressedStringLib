@@ -7,7 +7,6 @@
 
     	std::string s="a";
 
-    	//std::getline(std::ifstream("/home/tugrul/Downloads/Guide to x86 Assembly.html"), s, '\0');
     	std::getline(std::ifstream("./bigfile.txt"), s, '\0');
 
 
@@ -62,3 +61,6 @@
     	}
     	return 0;
     }
+
+// output
+
