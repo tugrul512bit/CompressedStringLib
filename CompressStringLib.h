@@ -120,30 +120,34 @@ namespace CompressedStringLib
     	void add(std::string str)
     	{
     		const int sz = str.size();
+
     		const int sz8= sz-(sz%8);
 
     		size_t parallelAccumulator[4][256];
     		for(int i=0;i<4;i++)
     			for(int j=0;j<256;j++)
     				parallelAccumulator[i][j]=0;
+
     		for(int i=0;i<sz8;i+=8)
     		{
-    			parallelAccumulator[0][str[i]]++;
-    			parallelAccumulator[1][str[i+1]]++;
-    			parallelAccumulator[2][str[i+2]]++;
-    			parallelAccumulator[3][str[i+3]]++;
-    			parallelAccumulator[0][str[i+4]]++;
-    			parallelAccumulator[1][str[i+5]]++;
-    			parallelAccumulator[2][str[i+6]]++;
-    			parallelAccumulator[3][str[i+7]]++;
+
+    			parallelAccumulator[0][(unsigned char)str[i]]++;
+    			parallelAccumulator[1][(unsigned char)str[i+1]]++;
+    			parallelAccumulator[2][(unsigned char)str[i+2]]++;
+    			parallelAccumulator[3][(unsigned char)str[i+3]]++;
+    			parallelAccumulator[0][(unsigned char)str[i+4]]++;
+    			parallelAccumulator[1][(unsigned char)str[i+5]]++;
+    			parallelAccumulator[2][(unsigned char)str[i+6]]++;
+    			parallelAccumulator[3][(unsigned char)str[i+7]]++;
     		}
     		for(int i=0;i<4;i++)
     			for(int j=0;j<256;j++)
     				referenceMapDirect[j]+=parallelAccumulator[i][j];
     		for(int i=sz8;i<sz;i++)
     		{
-    			referenceMapDirect[str[i]]++;
+    			referenceMapDirect[(unsigned char)str[i]]++;
     		}
+
     	}
 
     	void add(unsigned char data)
@@ -178,6 +182,7 @@ namespace CompressedStringLib
     				referenceVec.push_back(node);
     				sortedNodes.push_back(node);
     				ctr++;
+
     			}
     		}
     		if(singleCharDetected == 1)
@@ -1516,7 +1521,10 @@ private:
     		// if optimized with Huffman Encoding
     		if(hstr)
     		{
-    			*hstr = HuffmanString(std::string(compressed.begin(),compressed.end()));
+    			std::string hs;
+    			hs.resize(compressed.size());
+    			std::copy(compressed.begin(),compressed.end(),hs.begin());
+    			*hstr = HuffmanString(hs);
 
     			// release unused internal data
     			compressed = std::vector<unsigned char>();
