@@ -22,15 +22,38 @@ unsigned char c = pstr2[1024*1024*2];
 
 ```
 
+Tests on compiler g++ with flags  -march=native -mavx -m64 -O3 -std=c++1y:
+
+### FX8150 3.6GHz CPU + single channel 1333MHz RAM + Ubuntu 18.04LTS + turbo disabled
+
 Encoding: 110 MB/s single core
 
 Decoding: 130 MB/s single core
 
-(FX8150 3.6GHz CPU + single channel 1333MHz RAM + Ubuntu 18.04LTS + turbo disabled)
 
-(Tested on compiler g++ with flags  -march=native -mavx -m64 -O3 -std=c++1y)
 
-( Intel(R) Xeon(R) CPU E3-1270 V2 @ 3.50GHz processor single-core reaches 280 MB/s encoding/decoding performance according to ideone:https://ideone.com/PFlyVj)
+
+### Intel(R) Xeon(R) CPU E3-1270 V2 @ 3.50GHz  (https://ideone.com/PFlyVj)
+
+Encoding: 280 MB/s
+
+Decoding: 270 MB/s
+
+
+
+### Intel(R) Xeon(R) E-2286G CPU @ 4.00GHz (https://wandbox.org/)
+
+Encoding: 516MB/s
+
+Decoding: 426MB/s
+
+
+
+### AMD Opteron(tm) Processor 4332 HE (http://coliru.stacked-crooked.com/a/5ecec4a2fcf7d6e9)
+
+Encoding: 280 MB/s
+
+Decoding: 290 MB/s
 
 ----
 
