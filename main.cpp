@@ -65,7 +65,7 @@
 // output
 /*
 
-this is 334kB C++ header file content
+this is 334kB C++ header file (opencl.hpp from khronos' site) content
 333774 --> 227444 --> 333774 (Predictor + RLE*2 + Huffman)
 333774 --> 227444 --> 333774 (Predictor + RLE*2 + Huffman)
 333774 --> 273092 --> 333774 (Predictor + RLE*2)
@@ -77,7 +77,7 @@ this is 334kB C++ header file content
 333774 --> 227382 --> 333774 (Huffman encoding)
 333774 --> 227382 --> 333774 (Huffman encoding)
 
-this is 334kB C++ header file content appended to 1MB of "a" string
+this is same 334kB C++ header file content appended to string of 1MB "a" chars
 1382350 --> 227408 --> 1382350 (Predictor + RLE*2 + Huffman)
 1382350 --> 227408 --> 1382350 (Predictor + RLE*2 + Huffman) compressed size increased by 36 bytes!
 1382350 --> 273130 --> 1382350 (Predictor + RLE*2)
