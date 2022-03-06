@@ -159,7 +159,7 @@ Some compression ratios for other test data:
 - JavaScript file (Jquery 1.4.2): 163kB to 114kB
 - English dictionary from http://www.math.sjsu.edu/~foster/dictionary.txt: 3.2MB to 1.8MB
 - Dictionary from https://raw.githubusercontent.com/dwyl/english-words/master/words_alpha.txt: 3.8MB to 2.1MB
-- Html text from https://flint.cs.yale.edu/cs421/papers/x86-asm/asm.html: 45kB to 42kB 
+- Html text from https://flint.cs.yale.edu/cs421/papers/x86-asm/asm.html: 46kB to 37kB (predictor) to 33kB (predictor + huffman) to 38kB (huffman)
 
 Htop mem measurement:
 
