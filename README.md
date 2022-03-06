@@ -55,6 +55,22 @@ Encoding: 280 MB/s
 
 Decoding: 290 MB/s
 
+
+
+### Intel(R) Xeon(R) Gold 5215 CPU @ 2.50GHz (https://rextester.com/SJPGP78370)
+
+Encoding: 340 MB/s
+
+Decoding: 240 MB/s
+
+
+
+### AMD EPYC 7601 32-Core Processor (unknown frequency, unknown compilation flags, https://csacademy.com/code/S5TBVCoB/)
+
+Encoding: 212 MB/s (if each thread does a different string encoding, then 12GB/s total)
+
+Decoding: 194 MB/s
+
 ----
 
 ## HuffmanString
