@@ -31,6 +31,13 @@ Encoding: 110 MB/s single core
 Decoding: 130 MB/s single core
 
 
+Benchmarking 1MB string of "aaaaa":
+
+### FX8150 3.6GHz CPU + single channel 1333MHz RAM + Ubuntu 18.04LTS + turbo disabled
+
+Encoding: 144 MB/s single core
+
+Decoding: 140 MB/s single core
 
 
 ### Intel(R) Xeon(R) CPU E3-1270 V2 @ 3.50GHz  (https://ideone.com/PFlyVj)
