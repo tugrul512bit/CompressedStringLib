@@ -85,7 +85,7 @@ std::getline(std::ifstream("opencl.hpp"), stri, '\0'); // 326kB
 
 
 // internal data (only compressed char-literals, not prefixes) is compressed further by Huffman Encoding
-// 196 kB
+// 173 kB
 // 32 MB/s decoding bandwidth (just a bit higher than Huffman Encoding alone due to already compressed data size)
 using UnsignedIntegerPrefixType = size_t;
 CompressedStringLib::PredictorString<UnsignedIntegerPrefixType> pstr(
