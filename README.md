@@ -110,3 +110,34 @@ Some compression ratios for other test data:
 - English dictionary from http://www.math.sjsu.edu/~foster/dictionary.txt: 3.2MB to 1.8MB
 - Dictionary from https://raw.githubusercontent.com/dwyl/english-words/master/words_alpha.txt: 3.8MB to 2.1MB
 - Html text from https://flint.cs.yale.edu/cs421/papers/x86-asm/asm.html: 45kB to 42kB 
+
+Htop mem measurement:
+
+```C++
+
+#include "CompressStringLib.h"
+#include<fstream>
+
+int main()
+{
+   using ttype=size_t;
+   CompressedStringLib::PredictorString<ttype> pstrArr[2000];
+   {
+        std::string s1; //str holds the content of the file
+        std::getline(std::ifstream("bigfile.txt"), s1, '\0');
+
+
+
+        for(int i=0;i<2000;i++)
+        {
+           // disabling caching (0) as it increases memory footprint per instance!
+           pstrArr[i]=CompressedStringLib::PredictorString<ttype>(s1,0,CompressedStringLib::PredictorString<ttype>::OPTIMIZE_WITH_HUFFMAN_ENCODING);
+        }
+   }
+   int ii;
+   std::cin>>ii;
+   return 0;
+}
+
+```
+According to Htop, 11.6% of 4GB RAM is consumed by the app. This is 464 megabytes. 464 MB / 2000 = 232 kB
