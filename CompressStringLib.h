@@ -1202,6 +1202,157 @@ private:
     };
 
 
+
+    class RunLengthEncoderString
+    {
+    public:
+    	RunLengthEncoderString(std::string str=std::string(""))
+    	{
+    		const int szBlock = 8;
+    		const size_t sz = str.size();
+    		const size_t sz8 = sz-(sz%szBlock);
+    		unsigned char last = ((str.size()>0)?str[0]:0);
+    		unsigned char count = 0;
+    		counts.resize(sz);
+    		chars.resize(sz);
+
+
+    		alignas(64)
+    		unsigned char tmp[szBlock];
+
+    		size_t nsz = 0;
+    		for(size_t i=0;i<sz8;i+=szBlock)
+    		{
+    			for(int j=0;j<szBlock;j++)
+    			{
+    				if(i+j<sz)
+    				{
+    					tmp[j]=str[i+j];
+    				}
+    			}
+
+    			for(int j=0;j<szBlock;j++)
+    			{
+    				if(i+j<sz)
+    				{
+						unsigned char cur = tmp[j];
+						if(count==255 || (last!=cur))
+						{
+							counts[nsz]=count;
+							chars[nsz]=last;
+							nsz++;
+							count=1;
+						}
+						else
+						{
+							count++;
+						}
+						last=cur;
+    				}
+    			}
+    		}
+
+    		for(size_t i=sz8;i<sz;i++)
+    		{
+    			unsigned char cur = str[i];
+    			if(count==255 || (last!=cur))
+    			{
+
+    				counts[nsz]=count;
+    				chars[nsz]=last;
+    				nsz++;
+    				count=1;
+    			}
+    			else
+    			{
+    				count++;
+    			}
+    			last=cur;
+    		}
+
+
+
+    		if(count>0)
+    		{
+    			counts[nsz]=count;
+    			chars[nsz]=last;
+    			nsz++;
+    		}
+
+    		counts.resize(nsz);
+    		chars.resize(nsz);
+    		counts.shrink_to_fit();
+    		chars.shrink_to_fit();
+
+    	}
+
+
+    	std::string compressedData()
+    	{
+    		std::string str;
+    		str.resize(chars.size());
+    		std::copy(chars.begin(),chars.end(),str.begin());
+    		return str;
+    	}
+
+    	std::string compressedPrefix()
+    	{
+    		std::string str;
+    		str.resize(counts.size());
+    		std::copy(counts.begin(),counts.end(),str.begin());
+    		return str;
+    	}
+
+    	void clearCompressedData()
+    	{
+    		chars=std::vector<unsigned char>();
+    	}
+
+    	void clearCompressedPrefix()
+    	{
+    		counts=std::vector<unsigned char>();
+    	}
+
+    	void setCompressedData(std::string str)
+    	{
+    		chars.resize(str.size());
+    		std::copy(str.begin(),str.end(),chars.begin());
+    	}
+
+    	void setCompressedPrefix(std::string str)
+    	{
+    		counts.resize(str.size());
+    		std::copy(str.begin(),str.end(),counts.begin());
+    	}
+
+    	void setCompressedData(std::vector<unsigned char> str)
+    	{
+    		chars.resize(str.size());
+    		std::copy(str.begin(),str.end(),chars.begin());
+    	}
+
+    	std::string string()
+    	{
+    		std::string result;
+    		const size_t sz = counts.size();
+    		for(size_t i=0; i<sz; i++)
+    		{
+
+    			for(int j=0;j<counts[i];j++)
+    				result += chars[i];
+    		}
+    		return result;
+    	}
+
+    	size_t compressedSize()
+    	{
+    		return counts.size() + counts.size();
+    	}
+    private:
+    	std::vector<unsigned char> chars;
+    	std::vector<unsigned char> counts;
+    };
+
     template<typename PrefixType=size_t>
     class PredictorFields
     {
@@ -1341,21 +1492,45 @@ private:
     			compressed = std::vector<unsigned char>();
     		}
 
-    		return result.substr(0,szStr);
+    		if(rstr)
+    		{
+
+    			rstr->setCompressedData(result.substr(0,szStr));
+    			rstr->setCompressedPrefix(rpstr->string());
+    			result = rstr->string();
+    			rstr->clearCompressedData();
+    			rstr->clearCompressedPrefix();
+    			return result;
+    		}
+    		else
+    			return result.substr(0,szStr);
     	}
 
     	const std::string bits()
     	{
+    		std::string result;
+
     		if(hstr)
     		{
     			std::vector<unsigned char> ser = hstr->serialize();
 
-    			return std::string(ser.begin(),ser.end());
+    			result+=std::string(ser.begin(),ser.end());
     		}
-    		else
+
+    		if (rstr)
     		{
-    			return std::string((const char * )compressed.data(),compressed.size());
+    			std::string str=rstr->compressedPrefix() + rstr->compressedData() + rpstr->compressedPrefix() + rpstr->compressedData();
+    			str += std::string((const char * )compressed.data(),compressed.size());
+    			result += str;
     		}
+
+    		if((hstr) || (rstr))
+    		{
+    			return result;
+    		}
+
+    		return std::string((const char * )compressed.data(),compressed.size());
+
     	}
 
 
@@ -1366,8 +1541,22 @@ private:
 
 
 
-    	void compress(const std::string & str=std::string(""))
+    	void compress(const std::string & strIn=std::string(""))
     	{
+    		std::string str;
+    		if(rstr)
+    		{
+    			*rstr = RunLengthEncoderString(strIn);
+    			str = rstr->compressedData();
+    			*rpstr = RunLengthEncoderString(rstr->compressedPrefix());
+    			rstr->clearCompressedPrefix();
+    			rstr->clearCompressedData();
+    		}
+    		else
+    		{
+    			str=strIn;
+    		}
+
     		const int n = 256;
 
     		unsigned char dict[(n*n)/8]; // todo: 8bit->1byte compression
@@ -1531,6 +1720,8 @@ private:
     		}
     	}
     	std::shared_ptr<HuffmanString> hstr;
+    	std::shared_ptr<RunLengthEncoderString> rstr;
+    	std::shared_ptr<RunLengthEncoderString> rpstr;
 private:
     	std::vector<PrefixType> prefix;
     	std::vector<unsigned char> compressed;
@@ -1548,7 +1739,19 @@ private:
     		OPTIMIZE_NONE,
 
     		// compressed string's character-literal buffer is further compressed by Huffman Encoding
-    		OPTIMIZE_WITH_HUFFMAN_ENCODING
+    		OPTIMIZE_WITH_HUFFMAN_ENCODING,
+
+    		/*
+    		 * Adds run-length-encoding to outermost layer
+    		 * run-length-encoding layer's "count" fields are also compressed by another layer of run-length-encoding (expecting a lot of "1")
+    		 * not implemented yet
+    		 */
+       		OPTIMIZE_WITH_RUNLENGTH_ENCODING,
+
+    		/*
+    		 * Combination of OPTIMIZE_WITH_HUFFMAN_ENCODING and OPTIMIZE_WITH_RUNLENGTH_ENCODING
+    		 */
+       		OPTIMIZE_WITH_HUFFMAN_RUNLENGTH_ENCODING
     	};
 
     	/*
@@ -1563,10 +1766,22 @@ private:
     		if(optimization_level==OPTIMIZE_NONE)
     		{
     			fields->hstr = nullptr;
+    			fields->rstr = nullptr;
     		}
     		else if(optimization_level==OPTIMIZE_WITH_HUFFMAN_ENCODING)
     		{
     			fields->hstr = std::make_shared<HuffmanString>();
+    		}
+    		else if(optimization_level==OPTIMIZE_WITH_RUNLENGTH_ENCODING)
+    		{
+    			fields->rstr = std::make_shared<RunLengthEncoderString>();
+    			fields->rpstr = std::make_shared<RunLengthEncoderString>();
+    		}
+    		else if(optimization_level==OPTIMIZE_WITH_HUFFMAN_RUNLENGTH_ENCODING)
+    		{
+    			fields->hstr = std::make_shared<HuffmanString>();
+    			fields->rstr = std::make_shared<RunLengthEncoderString>();
+    			fields->rpstr = std::make_shared<RunLengthEncoderString>();
     		}
 
     		fields->compress(str);
@@ -1663,49 +1878,7 @@ private:
     };
 }
 
-class RunLengthEncoderString
-{
-public:
-	RunLengthEncoderString(std::string str=std::string(""))
-	{
-		const size_t sz = str.size();
 
-
-		for(size_t i=0;i<sz-2;i++)
-		{
-			if(sub.find(str.substr(i,2)) == sub.end())
-			{
-				sub[str.substr(i,2)] = 0;
-			}
-			else
-			{
-				sub[str.substr(i,2)]++;
-			}
-		}
-	}
-
-	std::vector<unsigned char> string()
-	{
-		std::map<std::string,size_t> tmp;
-		size_t ct=0;
-		for(auto & it:sub)
-		{
-
-
-			if(it.second>=2)
-			{
-				tmp[it.first]=it.second;
-				std::cout<<it.first<<":"<<it.second<<std::endl;
-				ct++;
-			}
-		}
-		std::cout<<"="<<ct<<std::endl;
-		return rle;
-	}
-private:
-	std::vector<unsigned char> rle;
-	std::map<std::string,size_t> sub;
-};
 
 
 
