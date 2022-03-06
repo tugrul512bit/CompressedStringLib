@@ -115,9 +115,9 @@ CompressedStringLib::HuffmanString test5(bigFile,false,256); // 540kB
 unsigned char c = test5[1024*1024*2]; 
 ```
 
-Encoding: 53 MB/s single core
+Encoding: 65 MB/s single core (150 MB/s for 1MB of "a")
 
-Decoding: 30 MB/s single core
+Decoding: 30 MB/s single core (140 MB/s for 1MB of "a")
 
 (FX8150 3.6GHz CPU + single channel 1333MHz RAM  + Ubuntu 18.04LTS + turbo disabled)
 
