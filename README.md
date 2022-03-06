@@ -124,7 +124,7 @@ int main()
    CompressedStringLib::PredictorString<ttype> pstrArr[2000];
    {
         std::string s1; //str holds the content of the file
-        std::getline(std::ifstream("bigfile.txt"), s1, '\0');
+        std::getline(std::ifstream("opencl.hpp"), s1, '\0'); // 326kB 
 
 
 
