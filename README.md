@@ -120,8 +120,8 @@ Htop mem measurement:
 
 int main()
 {
-   using ttype=size_t;
-   CompressedStringLib::PredictorString<ttype> pstrArr[2000];
+   using UnsignedIntegerPrefixType = size_t;
+   CompressedStringLib::PredictorString<UnsignedIntegerPrefixType> pstrArr[2000];
    {
         std::string s1; //str holds the content of the file
         std::getline(std::ifstream("opencl.hpp"), s1, '\0'); // 326kB 
@@ -131,7 +131,7 @@ int main()
         for(int i=0;i<2000;i++)
         {
            // disabling caching (0) as it increases memory footprint per instance!
-           pstrArr[i]=CompressedStringLib::PredictorString<ttype>(s1,0,CompressedStringLib::PredictorString<ttype>::OPTIMIZE_WITH_HUFFMAN_ENCODING);
+           pstrArr[i]=CompressedStringLib::PredictorString<UnsignedIntegerPrefixType>(s1,0,CompressedStringLib::PredictorString<UnsignedIntegerPrefixType>::OPTIMIZE_WITH_HUFFMAN_ENCODING);
         }
    }
    int ii;
@@ -141,3 +141,11 @@ int main()
 
 ```
 According to Htop, 11.6% of 4GB RAM is consumed by the app. This is 464 megabytes. 464 MB / 2000 = 232 kB
+
+---
+
+## How Does Compression Work?
+
+In PredictorString, algorithm uses a dynamically built boolean dictionary to guess the next character in the input. Depending on true/false predictions, it edits dictionary and on every failed prediction it carries character to output and on every successful prediction it just updates dictionary. Depending on combination of failures/successes, it builds a mask (1=success, 0=fail) and writes it to a prefix output. Then in decompression part, it does exact opposite as same dictionary is dynamically built again. This has the extra memory footprint only during encoding and decoding.
+
+In HuffmanString, there is Huffman Tree building -> encoding of string -> decoding of string phases. Huffman Tree is built by frequencies of character codes. The most frequent characters are placed on top nodes while lower-frequent characters are placed on deeper nodes. Then they are traversed top-down approach to build tags for them. On every "left" path taken, a "0" is added to tag, on every "right" path taken, "1" is added to path, until target char's node is reached. This effectively encodes plain text with non-random content into much shorter names, as low as single bit per char.
