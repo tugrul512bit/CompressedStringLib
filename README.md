@@ -31,7 +31,7 @@ Encoding: 110 MB/s single core
 Decoding: 130 MB/s single core
 
 
-Benchmarking 1MB string of "aaaaa":
+## 1MB string of "aaaaa"
 
 ### FX8150 3.6GHz CPU + single channel 1333MHz RAM + Ubuntu 18.04LTS + turbo disabled
 
