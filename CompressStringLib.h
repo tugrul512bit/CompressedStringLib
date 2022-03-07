@@ -1595,6 +1595,7 @@ private:
     		{
     			for(int j=0;j<szTileTmp;j++)
     			{
+                                // if(i+j<sz) --> works without this. Why?
     				tmp[j]=str[i+j];
     			}
 
