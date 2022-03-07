@@ -1513,14 +1513,12 @@ private:
     		if(hstr)
     		{
     			std::vector<unsigned char> ser = hstr->serialize();
-
     			result+=std::string(ser.begin(),ser.end());
     		}
 
     		if (rstr)
     		{
     			std::string str=rstr->compressedPrefix() + rstr->compressedData() + rpstr->compressedPrefix() + rpstr->compressedData();
-    			str += std::string((const char * )compressed.data(),compressed.size());
     			result += str;
     		}
 
@@ -1536,7 +1534,7 @@ private:
 
     	const std::string bits2()
     	{
-    		return std::string((const char * )prefix.data(),prefix.size());
+    		return std::string((const char * )prefix.data(),prefix.size()*sizeof(PrefixType));
     	}
 
 
@@ -1595,7 +1593,7 @@ private:
     		{
     			for(int j=0;j<szTileTmp;j++)
     			{
-                                if(i+j<sz) // works without this check. Why? Cache line?
+    				if(i+j<sz) // works without this check. Why? Cache line?
     				    tmp[j]=str[i+j];
     			}
 
