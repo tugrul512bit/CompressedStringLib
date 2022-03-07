@@ -3,7 +3,8 @@ Heavy-weight std::string wrapper that compresses its content and decompresses wh
 
 ## PredictorString
 
-Uses single-char transition dictionary prediction to compress data. Fast decompression.
+Uses single-char transition dictionary prediction to compress data. Optionally enables Huffman Encoding and Run Length Encoding to optimize compression.
+Fast decompression.
 
 ```C++
 std::string s1;
