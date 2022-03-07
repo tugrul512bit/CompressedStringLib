@@ -1520,6 +1520,7 @@ private:
     		{
     			std::string str=rstr->compressedPrefix() + rstr->compressedData() + rpstr->compressedPrefix() + rpstr->compressedData();
     			result += str;
+    			result += std::string((const char * )compressed.data(),compressed.size());
     		}
 
     		if((hstr) || (rstr))
