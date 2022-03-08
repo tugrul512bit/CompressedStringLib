@@ -1366,7 +1366,8 @@ private:
     		unsigned char dict[(n*n)/8]; // todo: 8bit->1byte compression
     		int predict[n];
     		std::memset(&dict[0],0,(n*n)/8);
-    		std::memset(&predict[0],-1,n*sizeof(int));
+    		for(int i=0;i<n;i++)
+    			predict[i]=-1;
 
     		const size_t sz = prefix.size();
     		constexpr int szTileIn = 64;
@@ -1539,7 +1540,7 @@ private:
     	}
 
 
-
+    	// constexpr int SIMD_LANES = 8;
     	void compress(const std::string & strIn=std::string(""))
     	{
     		std::string str;
@@ -1561,7 +1562,8 @@ private:
     		unsigned char dict[(n*n)/8]; // todo: 8bit->1byte compression
     		int predict[n];
     		std::memset(&dict[0],0,(n*n)/8);
-    		std::memset(&predict[0],-1,n*sizeof(int));
+    		for(int i=0;i<n;i++)
+    			predict[i]=-1;
 
     		const size_t sz = str.size();
     		szStr = sz;
